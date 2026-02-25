@@ -1,16 +1,29 @@
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
 import { Match } from "src/model/match.model";
 import { Team } from "src/model/team.model";
 import { Tournament } from "src/model/tournament.model";
+import { Repository } from "typeorm";
 
+@Injectable()
 export class TournamentService {
+
+	constructor(
+		@InjectRepository(Tournament)
+		private tournamentRepo: Repository<Tournament>,
+	) {}
+
 	/**
 	 * 
 	 * @param tournament 
 	 * @returns 
 	 */
-	public saveTournament(tournament: Tournament): Tournament {
-		// TODO : save tournament in database
-		return tournament;
+	public saveTournament(tournament: Tournament) {
+		try {
+			this.tournamentRepo.save(tournament);
+		} catch (error) {
+			throw new Error(`Error saving tournament: ${error.message}`);
+		}
 	}
 
 	/**
@@ -18,21 +31,25 @@ export class TournamentService {
 	 * @param id 
 	 * @returns 
 	 */
-	public getTournament(id: number): Tournament {
-		// TODO : get tournament from database
+	public async getTournament(id: number): Promise<Tournament> {
 		try {
-			return new Tournament();
+			return await this.tournamentRepo.findOneOrFail({
+				where: { id: id }
+			});
 		} catch (error) {
-			throw new Error(`Tournament with id ${id} not found`);
+			throw new NotFoundException(`Tournament with id ${id} not found`);
 		}
 	}
 
 	/**
 	 * @return An array of all tournaments.
 	 */
-	public getAllTournaments(): Tournament[] {
-		// TODO : get all tournaments from database
-		return [];
+	public async getAllTournaments(): Promise<Tournament[]> {
+		try {
+			return await this.tournamentRepo.find();
+		} catch (error) {
+			throw new NotFoundException(`Error retrieving tournaments: ${error.message}`);
+		}
 	}
 
 	/**
@@ -53,8 +70,8 @@ export class TournamentService {
 		}
 
 		for (const match of tournament.matches) {
-			const pointA = points.get(match.teamA.id)!;
-			const pointB = points.get(match.teamB.id)!;
+			const pointA = points.get(match.aTeam.id)!;
+			const pointB = points.get(match.bTeam .id)!;
 
 			if (match.scoreA !== undefined && match.scoreB !== undefined) {
 				if (match.scoreA > match.scoreB) {
@@ -82,7 +99,7 @@ export class TournamentService {
 	public generateMatches(tournament: Tournament): Tournament {
 		const teams = tournament.teams;
 		tournament.matches = [];
-	
+
 		if (teams.length < 2) {
 			throw new Error("At least 2 teams are required to generate matches");
 		}
@@ -98,5 +115,17 @@ export class TournamentService {
 		this.saveTournament(tournament);
 
 		return tournament;
+	}
+
+	public setTeamsOfTournament(tournament: Tournament, teams: Team[]) {
+		tournament.teams = [];
+
+		for (const team of teams) {
+			// TODO Chercher l'equipe avec le nom, si elle existe, l'utiliser
+
+			tournament.addTeam(team);
+		}
+
+		this.saveTournament(tournament);
 	}
 }
