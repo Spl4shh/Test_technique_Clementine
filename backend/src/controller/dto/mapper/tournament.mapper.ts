@@ -14,6 +14,7 @@ export class TournamentMapper {
       toTournamentDto(tournament: Tournament): TournamentDto {
             const tournamentDto = new TournamentDto();
 
+            tournamentDto.id = tournament.id;
             tournamentDto.name = tournament.name;
             tournamentDto.date = tournament.date;
             tournamentDto.description = tournament.description;
@@ -26,6 +27,7 @@ export class TournamentMapper {
       toTournament(tournamentDto: TournamentDto): Tournament {
             const tournament = new Tournament();
 
+            tournament.id = tournamentDto.id;
             tournament.name = tournamentDto.name;
             tournament.date = tournamentDto.date;
             tournament.description = tournamentDto.description;

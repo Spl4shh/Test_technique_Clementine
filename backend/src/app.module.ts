@@ -12,6 +12,8 @@ import { MatchMapper } from './controller/dto/mapper/match.mapper';
 import { TeamMapper } from './controller/dto/mapper/team.mapper';
 import { MatchController } from './controller/match.controller';
 import { MatchService } from './service/match.service';
+import { TeamService } from './service/team.service';
+import { TeamController } from './controller/team.controller';
 
 @Module({
 	imports: [
@@ -37,12 +39,16 @@ import { MatchService } from './service/match.service';
 			Match
 		])
 	],
-	controllers: [MatchController, TournamentController],
+	controllers: [
+		MatchController,
+		TeamController,
+		TournamentController],
 	providers: [
 		MatchMapper,
 		TeamMapper,
 		TournamentMapper, 
 		MatchService,
+		TeamService,
 		TournamentService
 	],
 })

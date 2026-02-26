@@ -1,9 +1,10 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Match } from "src/model/match.model";
 import { Team } from "src/model/team.model";
 import { Tournament } from "src/model/tournament.model";
 import { Repository } from "typeorm";
+import { TeamService } from "./team.service";
 
 @Injectable()
 export class TournamentService {
@@ -11,6 +12,8 @@ export class TournamentService {
 	constructor(
 		@InjectRepository(Tournament)
 		private tournamentRepo: Repository<Tournament>,
+		@Inject(TeamService)
+		private teamService: TeamService
 	) {}
 
 	/**
@@ -63,15 +66,15 @@ export class TournamentService {
 		const points = new Map<number, { team: Team; points: number }>();
 
 		for (const team of tournament.teams) {
-			points.set(team.id, {
+			points.set(team.id!, {
 				team: team,
 				points: 0
 			});
 		}
 
 		for (const match of tournament.matches) {
-			const pointA = points.get(match.aTeam.id)!;
-			const pointB = points.get(match.bTeam .id)!;
+			const pointA = points.get(match.aTeam.id!)!;
+			const pointB = points.get(match.bTeam .id!)!;
 
 			if (match.scoreA !== undefined && match.scoreB !== undefined) {
 				if (match.scoreA > match.scoreB) {
@@ -117,13 +120,30 @@ export class TournamentService {
 		return tournament;
 	}
 
-	public setTeamsOfTournament(tournament: Tournament, teams: Team[]) {
+	/**
+	 * Définir la liste des équipe d'un tournoi.
+	 * Supprime les anciennes équipes
+	 * 
+	 * @param tournament Le tournoi qui va accueillir la liste d'équipe
+	 * @param teams Les {@link Team} à ajouter au tournoi
+	 * @throws Error si une équipe n'existe pas ou si une équipe a déjà été ajoutée au tournoi
+	 */
+	public async setTeamsOfTournament(tournament: Tournament, teams: Team[]) {
 		tournament.teams = [];
 
 		for (const team of teams) {
-			// TODO Chercher l'equipe avec le nom, si elle existe, l'utiliser
+			if (!team.id) {
+				// TODO en fonction de la gestion coté front, remplacer cette ligne par un save
+				let teamToAdd : Team|null = await this.teamService.getTeamByName(team.name);
 
-			tournament.addTeam(team);
+				if (!teamToAdd) {
+					teamToAdd = team;
+				}
+
+				tournament.addTeam(teamToAdd);
+			} else {
+				tournament.addTeam(team);
+			}
 		}
 
 		this.saveTournament(tournament);

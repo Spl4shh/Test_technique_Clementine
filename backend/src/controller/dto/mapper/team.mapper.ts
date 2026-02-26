@@ -5,6 +5,7 @@ export class TeamMapper {
       toTeamDto(team: Team): TeamDto {
             const teamDto = new TeamDto();
 
+            teamDto.id = team.id;
             teamDto.name = team.name;
 
             return teamDto;
@@ -13,6 +14,7 @@ export class TeamMapper {
       toTeam(teamDto: TeamDto): Team {
             const team = new Team();
 
+            team.id = teamDto.id;
             team.name = teamDto.name;
             
             return team;

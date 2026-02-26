@@ -3,17 +3,17 @@
 ## Comment démarrer le projet ?
 ### Backend 
 
-Une fois le projet ouvert, acceder à la partie backend :
+Une fois le projet ouvert, acceder à la partie backend
 ```bash
 cd backend
 ```
 
-Puis installer les dépendances :
+Puis installer les dépendances
 ```bash
 npm install
 ```
 
-Enfin démarrer la partie serveur :
+Enfin démarrer la partie serveur
 ```bash
 npm run start:dev
 ```

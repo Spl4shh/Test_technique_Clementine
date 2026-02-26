@@ -6,7 +6,7 @@ import { User } from "./user.model";
 @Entity()
 export class Tournament {
       @PrimaryGeneratedColumn()
-      public id: number;
+      public id?: number;
 
       @Column()
       public name: string;
