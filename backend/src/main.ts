@@ -10,8 +10,11 @@ async function bootstrap() {
 	app.useGlobalPipes(new ValidationPipe({
 		transform: true,
 	}));
-
-
+	app.enableCors({
+		origin: 'http://localhost:8082', // ton frontend
+		methods: 'GET, HEAD, PUT, PATCH, POST, DELETE, OPTIONS',
+		credentials: true,
+	});
 
 	const configService = app.get(ConfigService);
 
