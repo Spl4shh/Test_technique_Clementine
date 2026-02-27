@@ -3,7 +3,7 @@ import { showTournamentScript } from "@/component/tournament/show-tournament/Sho
 import { dateFormater } from "@/utils/date-formater.utils";
 
 const {
-  tournament,
+  teamsRanking, tournament,
   goToTournaments, generateMatches, updateMatches
 } = showTournamentScript();
 const { formatDate } = dateFormater();
@@ -82,6 +82,26 @@ const { formatDate } = dateFormater();
       <v-card-text v-else>
         Aucun match
       </v-card-text>
+    </v-card>
+
+    <v-card v-if="tournament.matches.length > 0" class="mt-4">
+      <v-card-title>Classement</v-card-title>
+      <v-table>
+        <thead>
+          <tr>
+            <th>Équipe</th>
+            <th>Points</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr v-for="ranking in teamsRanking" :key="ranking.team.id">
+            <td>{{ ranking.team.name }}</td>
+            <td>{{ ranking.points }}</td>
+          </tr>
+        </tbody>
+      </v-table>
+
     </v-card>
 
   </v-container>

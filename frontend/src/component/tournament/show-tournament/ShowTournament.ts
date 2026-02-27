@@ -1,6 +1,7 @@
 import { MatchMapper } from "@/dto/mapper/match.mapper";
 import { TournamentMapper } from "@/dto/mapper/tournament.mapper";
 import { TournamentDto } from "@/dto/tournament.dto";
+import { Team } from "@/model/team.model";
 import { Tournament } from "@/model/tournament.model";
 import { router } from "@/router"
 import { inject, onMounted, ref } from "vue";
@@ -8,6 +9,7 @@ import { inject, onMounted, ref } from "vue";
 export function showTournamentScript() {
       const tournamentId = Number(router.currentRoute.value.params.id)
       const tournament = ref<Tournament>();
+      const teamsRanking = ref<{ team: Team, points: number }[]>([]);
       const tournamentMapper = inject("tournamentMapper") as TournamentMapper;
       const matchMapper = inject("matchMapper") as MatchMapper;
 
@@ -35,6 +37,15 @@ export function showTournamentScript() {
             })
       }
 
+      function fetchTeamsRanking() {
+            fetch(`http://localhost:8081/api/tournaments/${tournamentId}/ranking`, {
+                  method: "GET"
+            }).then(async response => await response.json() as { team: Team, points: number }[])
+             .then(teamsRankingData => {
+                  teamsRanking.value = teamsRankingData;
+            })
+      }
+
       function updateMatches() {
             tournament.value?.matches.forEach(match => {
                   if (match.scoreA !== null && match.scoreB !== null) {
@@ -55,9 +66,11 @@ export function showTournamentScript() {
 
       onMounted(() => {
             fetchTournament();
+            fetchTeamsRanking();
       })
 
       return {
+            teamsRanking,
             tournament,
             goToTournaments,
             generateMatches,
