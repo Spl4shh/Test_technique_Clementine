@@ -1,6 +1,15 @@
 # Test_technique_Clementine
 
 ## Comment démarrer le projet ?
+### Docker
+
+Ici, Docker va servir à gérer la DB et à ne pas avoir à lancer de logiciel tierce. 
+
+Une fois que votre docker en local sera démarrer, vous pourrez executer le docker compose
+```bash
+docker compose up -d
+```
+
 ### Backend 
 
 Une fois le projet ouvert, acceder à la partie backend
@@ -18,6 +27,21 @@ Enfin démarrer la partie serveur
 npm run start:dev
 ```
 
+### Frontend
+Une fois le projet ouvert, acceder à la partie frontend
+```bash
+cd frontend
+```
+
+Puis installer les dépendances
+```bash
+npm install
+```
+
+Enfin démarrer la partie interface
+```bash
+npm run dev
+```
 ## Techno utilisées
 
 Node (NestJS), Vue3, Docker
