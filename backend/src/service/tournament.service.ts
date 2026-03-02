@@ -160,24 +160,26 @@ export class TournamentService {
 	 * @throws Error si une équipe n'existe pas ou si une équipe a déjà été ajoutée au tournoi
 	 */
 	public async addTeamToTournament(tournament: Tournament, team: Team) {
-		if (!team.id) {
-			// TODO en fonction de la gestion coté front, remplacer cette ligne par un save
-			let teamToAdd : Team|null = await this.teamService.getTeamByName(team.name);
+		if(team.name) {
+			if (!team.id) {
+				// TODO en fonction de la gestion coté front, remplacer cette ligne par un save
+				let teamToAdd : Team|null = await this.teamService.getTeamByName(team.name);
 
-			if (!teamToAdd) {
-				console.log(`Team ${team.name} does not exist, creating it`);
-				teamToAdd = team;
+				if (!teamToAdd) {
+					console.log(`Team ${team.name} does not exist, creating it`);
+					teamToAdd = team;
+				}
+
+				tournament.addTeam(teamToAdd);
+			} else {
+				tournament.addTeam(team);
 			}
 
-			tournament.addTeam(teamToAdd);
-		} else {
-			tournament.addTeam(team);
+			await this.saveTournament(tournament);
+			
+			// On regénère les matchs pour prendre en compte la nouvelle équipe
+			await this.generateMatches(await this.getTournament(tournament.id!));	
 		}
-
-		await this.saveTournament(tournament);
-
-		// On regénère les matchs pour prendre en compte la nouvelle équipe
-		await this.generateMatches(await this.getTournament(tournament.id!));
 	}
 
 }
