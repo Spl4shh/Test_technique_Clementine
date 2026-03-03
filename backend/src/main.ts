@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common/pipes/validation.pipe';
 import { DataSource } from 'typeorm';
+import { BasicAuthGuard } from './config/guard';
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
@@ -20,7 +21,7 @@ async function bootstrap() {
 
 	const port = configService.get<number>('PORT') || 8081;
 	await app.listen(port);
-
+	
 	const dataSource = app.get(DataSource);
 	if (dataSource.isInitialized) {
 		console.log('Database connected');

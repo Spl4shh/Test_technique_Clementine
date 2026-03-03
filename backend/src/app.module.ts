@@ -17,6 +17,8 @@ import { TeamController } from './controller/team.controller';
 import { UserController } from './controller/user.controller';
 import { UserMapper } from './controller/dto/mapper/user.mapper';
 import { UserService } from './service/user.service';
+import { BasicAuthGuard } from './config/guard';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
 	imports: [
@@ -56,7 +58,11 @@ import { UserService } from './service/user.service';
 		MatchService,
 		TeamService,
 		TournamentService,
-		UserService
+		UserService,
+		{
+			provide: APP_GUARD,
+			useClass: BasicAuthGuard,
+		},
 	],
 })
 export class AppModule { }

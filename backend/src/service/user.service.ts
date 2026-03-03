@@ -22,13 +22,16 @@ export class UserService {
 
       }
 
-      public async find(user: User): Promise<User> {
+      public async find(user: User): Promise<User | null> {
             if (!user.username || !user.password) {
                   throw new Error("Invalid user data");
             } else {
-                  return await this.userRepo.findOneBy({ username: user.username }).then(async existingUser => {
+                  return await this.userRepo.findOneBy({ 
+                        username: user.username, 
+                        password: user.password
+                  }).then(async existingUser => {
                         if (!existingUser) {
-                              throw new Error("Username does not exist");
+                              return null;
                         } else {
                               return existingUser;
                         }
