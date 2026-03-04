@@ -11,6 +11,11 @@ const {
       <v-btn @click="goToCreateTournament">
             Nouveau tournoi
       </v-btn>
+
+      <h1 class="ml-auto mr-auto">
+            Gestion de tournois
+      </h1>
+
       <v-container>
             <v-card>
                   <v-card-title>Liste des tournois</v-card-title>

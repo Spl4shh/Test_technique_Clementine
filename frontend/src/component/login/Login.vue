@@ -10,6 +10,10 @@ const {
 </script>
 
 <template>
+      <h1 class="ml-auto mr-auto">
+            Gestion de tournois
+      </h1>
+
       <v-container class="fill-height d-flex align-center justify-center">
             <v-card width="400" class="pa-6">
 
