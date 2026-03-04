@@ -17,7 +17,7 @@ export class Tournament {
       @Column({ nullable: true })
       public description?: string;
 
-      @OneToOne(() => User, { eager: true, cascade: true })
+      @OneToOne(() => User, { eager: true })
       @JoinColumn()
       public creator: User;
 
